@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import axios from "axios";
-
+import * as actionCreators from "./store/actions/index";
+import { connect } from "react-redux";
 // Components
 import Sidebar from "./Sidebar";
 import Loading from "./Loading";
@@ -13,30 +14,22 @@ const instance = axios.create({
 });
 
 class App extends Component {
-  state = {
-    authors: [],
-    loading: true
-  };
+  // state = {
+  //   authors: [],
+  //   loading: true
+  // };
 
-  fetchAllAuthors = async () => {
-    const res = await instance.get("/api/authors/");
-    return res.data;
-  };
+  // fetchAllAuthors = async () => {
+  //   const res = await instance.get("/api/authors/");
+  //   return res.data;
+  // };
 
   async componentDidMount() {
-    try {
-      const authors = await this.fetchAllAuthors();
-      this.setState({
-        authors: authors,
-        loading: false
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    this.props.fetchAllAuthors();
   }
 
   getView = () => {
-    if (this.state.loading) {
+    if (this.props.loading) {
       return <Loading />;
     } else {
       return (
@@ -46,7 +39,7 @@ class App extends Component {
           <Route
             path="/authors/"
             render={props => (
-              <AuthorsList {...props} authors={this.state.authors} />
+              <AuthorsList {...props} authors={this.props.authors} />
             )}
           />
         </Switch>
@@ -67,5 +60,21 @@ class App extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  return {
+    authors: state.rootAuthors.authors,
+    loading: state.rootAuthors.loading
+  };
+};
 
-export default App;
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchAllAuthors: () => dispatch(actionCreators.fetchAuthors())
+  };
+};
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+);
