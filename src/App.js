@@ -39,7 +39,7 @@ class App extends Component {
           <Route
             path="/authors/"
             render={props => (
-              <AuthorsList {...props} authors={this.props.authors} />
+              <AuthorsList {...props} authors={this.props.filteredAuthors} />
             )}
           />
         </Switch>
@@ -63,7 +63,8 @@ class App extends Component {
 const mapStateToProps = state => {
   return {
     authors: state.rootAuthors.authors,
-    loading: state.rootAuthors.loading
+    loading: state.rootAuthors.loading,
+    filteredAuthors: state.rootAuthors.filteredAuthors
   };
 };
 

@@ -16,14 +16,12 @@ const authors = (state = initialState, action) => {
         loading: false
       };
     case actionTypes.FILTER_AUTHORS:
-      let filterAuthors = query => {
-        query = query.toLowerCase();
-        let filteredAuthors = this.state.authors.filter(author => {
-          return `${author.first_name} ${author.last_name}`
-            .toLowerCase()
-            .includes(query);
-        });
-      };
+      let filterAuthors = state.authors.filter(author => {
+        return `${author.first_name} ${author.last_name}`
+          .toLowerCase()
+          .includes(action.payload);
+      });
+
       return {
         ...state,
         filteredAuthors: filterAuthors,
